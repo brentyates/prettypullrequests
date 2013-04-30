@@ -12,3 +12,11 @@
 .collapse-lines label {
     margin-left: 10px;
 }
+
+.js-selectable-text {
+    cursor: pointer;
+}
+
+.js-comment-and-button {
+    margin-right: 60px;
+}

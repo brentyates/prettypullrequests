@@ -37,6 +37,7 @@ $('<span class="collapse-lines">' +
     '</span>').insertAfter('.actions .show-inline-notes');
 $('.js-collapse-additions').bind('click', collapseOrExpandAdditions);
 $('.js-collapse-deletions').bind('click', collapseOrExpandDeletions);
+$('.js-comment-and-button').text('Close Pull Request');
 
 chrome.runtime.onConnect.addListener(function(port) {
     console.assert(port.name == "pullrequest");
