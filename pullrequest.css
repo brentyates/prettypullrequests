@@ -1,0 +1,14 @@
+.collapse-lines {
+    position: relative;
+    display: block;
+    float: left;
+    margin-right: 10px;
+}
+
+.collapse-lines input {
+    margin-right: 3px;
+}
+
+.collapse-lines label {
+    margin-left: 10px;
+}
