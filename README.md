@@ -6,7 +6,5 @@ Current Features:
 - Click on the file name to collapse a file
 - Collapse/Expand all
 - Collapse/Expand all that match a criteria
-
-Roadmap:
-- Hide added/removed lines from a file
-- Any other suggestions!
+- Collapse/Expand added/removed lines
+- Move the close pull request button slightly away from the comment button
