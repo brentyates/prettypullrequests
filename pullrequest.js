@@ -35,10 +35,6 @@ $('<span class="collapse-lines">' +
     '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
     '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
     '</span>').insertAfter('.actions .show-inline-notes');
-$('<div class="meta">' + 
-    '<p class="bottom-expand-collapse">Exapand/ Collapse diff</p>'+
-    '</div>').insertAfter('file-comments-place-holder');
-$('.bottom-expand-collapse').bind('click', collapseOrExpandDiff);
 $('.js-collapse-additions').bind('click', collapseOrExpandAdditions);
 $('.js-collapse-deletions').bind('click', collapseOrExpandDeletions);
 $('.js-comment-and-button').text('Close Pull Request');
