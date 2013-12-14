@@ -20,3 +20,9 @@
 .js-comment-and-button {
     margin-right: 60px;
 }
+
+.bottom-collapse {
+	cursor: pointer;
+	font-family: Monaco, 'Liberation Mono', Courier, monospace;
+	text-align: center !important;
+}

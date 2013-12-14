@@ -1,5 +1,15 @@
-function collapseOrExpandDiff() {
-    $(this).closest('[id^=diff-]').children('.data').slideToggle(500);
+function collapseOrExpandDiff(e) {
+    var diffDom = $(this).closest('[id^=diff-]');
+    diffDom.children('.data, .image, div.view-modes').slideToggle(500);
+    if(diffDom.children('div.view-modes').length > 0) {
+        diffDom.css('height', 'auto');
+        diffDom.children('.bottom-collapse').remove();
+    }
+    if ($(e.target).hasClass('bottom-collapse')) {
+        $(this).toggle();
+    } else {
+        diffDom.find('.bottom-collapse').toggle();
+    }
 }
 
 function collapseOrExpandAdditions() {
@@ -22,11 +32,21 @@ function getDiffSpans(path) {
 }
 
 function collapseDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data').slideUp(500);
+    var allDiffSpans =  getDiffSpans(path).closest('[id^=diff-]');
+    allDiffSpans.children('.data, .image, div.view-modes').slideUp(500);
+    allDiffSpans.find('.bottom-collapse').hide();
+    if(allDiffSpans.children('div.view-modes').length > 0) {
+        allDiffSpans.css('height', 'auto');
+    }
 }
 
 function expandDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data').slideDown(500);
+    var allDiffSpans =  getDiffSpans(path).closest('[id^=diff-]');
+    allDiffSpans.children('.data, .image, div.view-modes').slideDown(500);
+    allDiffSpans.find('.bottom-collapse').show();
+    if(allDiffSpans.children('div.view-modes').length > 0) {
+        allDiffSpans.css('height', 'auto');
+    }
 }
 
 $('.js-selectable-text').bind('click', collapseOrExpandDiff);
@@ -35,6 +55,10 @@ $('<span class="collapse-lines">' +
     '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
     '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
     '</span>').insertAfter('.actions .show-inline-notes');
+$('<div class="bottom-collapse meta">' + 
+    'Collapse diff'+
+    '</div>').insertAfter('.data, .image, ul.view-modes-menu');
+$('.bottom-collapse').bind('click', collapseOrExpandDiff);
 $('.js-collapse-additions').bind('click', collapseOrExpandAdditions);
 $('.js-collapse-deletions').bind('click', collapseOrExpandDeletions);
 $('.js-comment-and-button').text('Close Pull Request');
