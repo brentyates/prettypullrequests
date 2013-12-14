@@ -48,7 +48,7 @@ $('<span class="collapse-lines">' +
 $('<div class="bottom-collapse meta">' + 
     'Collapse diff'+
     '</div>').insertAfter('.data, .image');
-$('div.view-modes').closest('[id^=diff-]').addClass('autoHeight');
+$('div.view-modes').closest('[id^=diff-]').addClass('auto-height');
 $('.bottom-collapse').bind('click', collapseOrExpandDiff);
 $('.js-collapse-additions').bind('click', collapseOrExpandAdditions);
 $('.js-collapse-deletions').bind('click', collapseOrExpandDeletions);
