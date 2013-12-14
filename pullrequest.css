@@ -25,4 +25,15 @@
 	cursor: pointer;
 	font-family: Monaco, 'Liberation Mono', Courier, monospace;
 	text-align: center !important;
+	position: relative;
+	bottom: 0px;
+	width: 100%;
+}
+
+.autoHeight {
+	height: auto !important;
+}
+
+.view-modes {
+	bottom: 25px !important;
 }
