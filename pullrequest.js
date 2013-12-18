@@ -1,5 +1,5 @@
 function collapseOrExpandDiff() {
-    $(this).closest('[id^=diff-]').children('.data').slideToggle(500);
+    $(this).closest('[id^=diff-]').children('.data, .image').slideToggle(500);
 }
 
 function collapseOrExpandAdditions() {
@@ -22,11 +22,11 @@ function getDiffSpans(path) {
 }
 
 function collapseDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data').slideUp(500);
+    getDiffSpans(path).closest('[id^=diff-]').children('.data, .image').slideUp(500);
 }
 
 function expandDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data').slideDown(500);
+    getDiffSpans(path).closest('[id^=diff-]').children('.data, .image').slideDown(500);
 }
 
 $('.js-selectable-text').bind('click', collapseOrExpandDiff);
