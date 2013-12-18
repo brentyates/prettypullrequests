@@ -1,5 +1,5 @@
 function collapseOrExpandDiff(e) {
-    $(this).closest('[id^=diff-]').children('.data').slideToggle(500);
+    $(this).closest('[id^=diff-]').children('.data, .image').slideToggle(500);
     if ($(e.target).hasClass('bottom-collapse')) {
         $(this).closest('div.bottom-collapse').toggle();
     } else {
@@ -27,12 +27,12 @@ function getDiffSpans(path) {
 }
 
 function collapseDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data').slideUp(500);
+    getDiffSpans(path).closest('[id^=diff-]').children('.data, .image').slideUp(500);
     getDiffSpans(path).closest('[id^=diff-]').children('div.bottom-collapse').hide();
 }
 
 function expandDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data').slideDown(500);
+    getDiffSpans(path).closest('[id^=diff-]').children('.data, .image').slideDown(500);
     getDiffSpans(path).closest('[id^=diff-]').children('div.bottom-collapse').show();
 }
 
