@@ -5,6 +5,7 @@ function collapseOrExpandDiff(e) {
     } else {
         $(this).closest('[id^=diff-]').children('div.bottom-collapse').toggle();
     }
+    $(this).closest('[id^=diff-]').children('.meta')[0].scrollIntoViewIfNeeded();
 }
 
 function collapseOrExpandAdditions() {
