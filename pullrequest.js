@@ -1,55 +1,48 @@
-function collapseOrExpandDiff(e) {
-    $(this).closest('[id^=diff-]').children('.data, .image').slideToggle(500);
-    if ($(e.target).hasClass('bottom-collapse')) {
-        $(this).closest('div.bottom-collapse').toggle();
-    } else {
-        $(this).closest('[id^=diff-]').children('div.bottom-collapse').toggle();
-    }
-    $(this).closest('[id^=diff-]').children('.meta')[0].scrollIntoViewIfNeeded();
-}
-
-function collapseOrExpandAdditions() {
-    $(this).closest('[id^=diff-]').find('.gi').slideToggle();
-}
-
-function collapseOrExpandDeletions() {
-    $(this).closest('[id^=diff-]').find('.gd').slideToggle();
-}
-
 function getDiffSpans(path) {
-    var spans;
-    if (path == "") {
-        spans = $('.js-selectable-text');
-    }
-    else {
-        spans = $("span:contains('" + path + "')");
-    }
-    return spans;
+    return $('.js-selectable-text').filter(function () {
+        return this.innerHTML.trim().match(path);
+    });
 }
 
 function collapseDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data, .image').slideUp(500);
-    getDiffSpans(path).closest('[id^=diff-]').children('div.bottom-collapse').hide();
+    var spans = getDiffSpans(path).closest('[id^=diff-]');
+    spans.children('.data, .image').slideUp(200);
+    spans.children('div.bottom-collapse').hide();
 }
 
 function expandDiffs(path) {
-    getDiffSpans(path).closest('[id^=diff-]').children('.data, .image').slideDown(500);
-    getDiffSpans(path).closest('[id^=diff-]').children('div.bottom-collapse').show();
+    var spans = getDiffSpans(path).closest('[id^=diff-]');
+    spans.children('.data, .image').slideDown(200);
+    spans.children('div.bottom-collapse').show();
 }
 
-$('.js-selectable-text').bind('click', collapseOrExpandDiff);
+$(
+    '<span class="collapse-lines">' +
+        '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
+        '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
+    '</span>'
+).insertAfter('.actions .show-inline-notes');
 
-$('<span class="collapse-lines">' +
-    '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
-    '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
-    '</span>').insertAfter('.actions .show-inline-notes');
-$('<div class="bottom-collapse meta">' + 
-    'Collapse diff'+
-    '</div>').insertAfter('.file-comments-place-holder');
-$('.bottom-collapse').bind('click', collapseOrExpandDiff);
-$('.js-collapse-additions').bind('click', collapseOrExpandAdditions);
-$('.js-collapse-deletions').bind('click', collapseOrExpandDeletions);
-$('.js-comment-and-button').text('Close Pull Request');
+$('<div class="bottom-collapse meta">Collapse diff</div>').insertAfter('.file-comments-place-holder');
+
+$('.js-selectable-text, .bottom-collapse').on('click', function (e) {
+    var span = $(this).closest('[id^=diff-]');
+    span.children('.data, .image').slideToggle(200);
+    if ($(e.target).hasClass('bottom-collapse')) {
+        $(this).closest('div.bottom-collapse').toggle();
+    } else {
+        span.children('div.bottom-collapse').toggle();
+    }
+    span.children('.meta')[0].scrollIntoViewIfNeeded();
+});
+
+$('.js-collapse-additions').on('click', function() {
+    $(this).closest('[id^=diff-]').find('.gi').slideToggle();
+});
+
+$('.js-collapse-deletions').on('click', function() {
+    $(this).closest('[id^=diff-]').find('.gd').slideToggle();
+});
 
 chrome.runtime.onConnect.addListener(function(port) {
     console.assert(port.name == "pullrequest");
