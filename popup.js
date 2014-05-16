@@ -18,3 +18,78 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#collapse').addEventListener('click', collapse);
     document.querySelector('#expand').addEventListener('click', expand);
 });
+
+function Node(id, parent, text, icon) {
+    var self = this;
+    self.id = id;
+    self.parent = parent || '#';
+    self.text = text;
+    if (icon !== undefined) {
+        self.icon = icon;
+    }
+}
+
+function convertPathsToNodes(paths) {
+    var nodes = {};
+    $.each(paths, function(index, path) {
+        var sections = path.split('/');
+        var node = new Node(sections[0], '#', sections[0], sections.length > 1 ? undefined : 'jstree-file');
+        nodes[node.id] = node;
+        if (sections.length == 1) {
+            return;
+        }
+
+        for (var i = 1; i < sections.length; i++) {
+            var id = sections.slice(0, i + 1).join('/');
+            var parent = sections.slice(0, i).join('/');
+            nodes[id] = new Node(id, parent, sections[i], i == sections.length - 1 ? 'jstree-file' : undefined);
+        }
+    });
+    var i = 0;
+    var nodes_flattened = [];
+    for (var node in nodes) {
+        nodes_flattened[i++] = nodes[node];
+    }
+
+    return nodes_flattened;
+}
+
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {getPaths: true}, function(response) {
+        if (response.paths) {
+            var nodes = convertPathsToNodes(response.paths);
+            console.log(nodes);
+            $('#tree').jstree({
+                'core' : {
+                    'data' : nodes,
+                    'animation': 0,
+                    'themes' : {
+                        'responsive' : false,
+                        'variant' : 'small'
+                    }
+                },
+                "plugins" : [ "wholerow", "contextmenu" ],
+                "contextmenu": {
+                    "items": function ($node) {
+                        return {
+                            "Collapse": {
+                                "label": "Collapse Diff",
+                                "action": function (obj) {
+                                    port.postMessage({collapse: '^' + $node.id});
+                                }
+                            },
+                            "Expand": {
+                                "label": "Expand Diff",
+                                "action": function (obj) {
+                                    port.postMessage({expand: '^' + $node.id});
+                                }
+                            }
+                        };
+                    }
+                }
+            }).on("select_node.jstree", function (e, data) {
+                return data.instance.toggle_node(data.node);
+            });
+        }
+    });
+});

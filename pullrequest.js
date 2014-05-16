@@ -56,3 +56,15 @@ chrome.runtime.onConnect.addListener(function(port) {
         }
     });
 });
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.getPaths) {
+            var paths = $.map($('.file .js-selectable-text'), function(item) { return $.trim(item.innerHTML) });
+            if (paths.length > 0) {
+                sendResponse({paths: paths});
+            }
+        }
+
+    }
+);
