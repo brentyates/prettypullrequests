@@ -54,6 +54,9 @@ chrome.runtime.onConnect.addListener(function(port) {
         if (msg.expand != undefined) {
             expandDiffs(msg.expand);
         }
+        if (msg.goto != undefined) {
+            getDiffSpans(msg.goto)[0].scrollIntoViewIfNeeded();
+        }
     });
 });
 

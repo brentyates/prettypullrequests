@@ -71,7 +71,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 "plugins" : [ "wholerow", "contextmenu" ],
                 "contextmenu": {
                     "items": function ($node) {
-                        return {
+                        var items = {
                             "Collapse": {
                                 "label": "Collapse Diff",
                                 "action": function (obj) {
@@ -83,8 +83,20 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                                 "action": function (obj) {
                                     port.postMessage({expand: '^' + $node.id});
                                 }
+                            },
+                            "Goto": {
+                                "label": "Jump to Diff",
+                                "action": function(obj) {
+                                    port.postMessage({goto: $node.id});
+                                }
                             }
                         };
+
+                        if ($node.icon != 'jstree-file') {
+                            delete items.Goto;
+                        }
+
+                        return items;
                     }
                 }
             }).on("select_node.jstree", function (e, data) {
