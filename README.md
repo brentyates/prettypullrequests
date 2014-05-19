@@ -7,3 +7,4 @@ Current Features:
 - Collapse/Expand all
 - Collapse/Expand all that match a regex pattern
 - Collapse/Expand added/removed lines
+- File tree view allowing you to collapse a directory, or jump directly to a file diff
