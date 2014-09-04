@@ -25,7 +25,9 @@ $(
 
 $('<div class="bottom-collapse meta">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
 
-$('.js-selectable-text, .bottom-collapse').on('click', function (e) {
+var $body = $('body');
+
+$body.on('click', '.js-selectable-text, .bottom-collapse', function (e) {
     var span = $(this).closest('[id^=diff-]');
     span.children('.data, .image').slideToggle(200);
     if ($(e.target).hasClass('bottom-collapse')) {
@@ -36,11 +38,11 @@ $('.js-selectable-text, .bottom-collapse').on('click', function (e) {
     span.children('.meta')[0].scrollIntoViewIfNeeded();
 });
 
-$('.js-collapse-additions').on('click', function() {
+$body.on('click', '.js-collapse-additions', function() {
     $(this).closest('[id^=diff-]').find('.blob-code-addition').parent('tr').slideToggle();
 });
 
-$('.js-collapse-deletions').on('click', function() {
+$body.on('click', '.js-collapse-deletions', function() {
     $(this).closest('[id^=diff-]').find('.blob-code-deletion').parent('tr').slideToggle();
 });
 
