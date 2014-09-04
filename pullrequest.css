@@ -1,7 +1,6 @@
 .collapse-lines {
-    position: relative;
-    display: block;
-    float: left;
+    float: right;
+    line-height: 33px;
     margin-right: 10px;
 }
 

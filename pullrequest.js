@@ -21,9 +21,9 @@ $(
         '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
         '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
     '</span>'
-).insertAfter('.actions .show-inline-notes');
+).insertAfter('.actions');
 
-$('<div class="bottom-collapse meta">Collapse diff</div>').insertAfter('.file-comments-place-holder');
+$('<div class="bottom-collapse meta">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
 
 $('.js-selectable-text, .bottom-collapse').on('click', function (e) {
     var span = $(this).closest('[id^=diff-]');
@@ -37,11 +37,11 @@ $('.js-selectable-text, .bottom-collapse').on('click', function (e) {
 });
 
 $('.js-collapse-additions').on('click', function() {
-    $(this).closest('[id^=diff-]').find('.gi').slideToggle();
+    $(this).closest('[id^=diff-]').find('.blob-code-addition').parent('tr').slideToggle();
 });
 
 $('.js-collapse-deletions').on('click', function() {
-    $(this).closest('[id^=diff-]').find('.gd').slideToggle();
+    $(this).closest('[id^=diff-]').find('.blob-code-deletion').parent('tr').slideToggle();
 });
 
 chrome.runtime.onConnect.addListener(function(port) {
