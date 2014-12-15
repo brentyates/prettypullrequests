@@ -20,12 +20,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function Node(id, parent, text, icon) {
-    var self = this;
-    self.id = id;
-    self.parent = parent || '#';
-    self.text = text;
-    if (icon !== undefined) {
-        self.icon = icon;
+    this.id = id;
+    this.parent = parent || '#';
+    this.text = text;
+    if (icon) {
+        this.icon = icon;
     }
 }
 

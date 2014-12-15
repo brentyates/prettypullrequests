@@ -13,11 +13,13 @@
         "scripts": ["background.js"]
     },
 
-    "permissions" : ["tabs"],
+    "permissions" : ["tabs", "storage"],
 
     "content_scripts": [
         {
-            "matches": ["https://github.com/*/pull/*", "https://github.com/*/commit*", "https://github.com/*/pulls*"],
+            "matches": ["https://*/*/pull/*",
+                        "https://*/*/commit*",
+                        "https://*/*/pulls*"],
             "js": ["jquery-1.9.1.min.js", "pullrequest.js"],
             "css": ["pullrequest.css"]
         }
@@ -31,5 +33,7 @@
 
     "web_accessible_resources": [
         "jquery.min.map"
-    ]
+    ],
+
+    "options_page": "options.html"
 }
