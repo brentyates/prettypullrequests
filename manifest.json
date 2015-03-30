@@ -19,7 +19,8 @@
         {
             "matches": ["https://*/*/pull/*",
                         "https://*/*/commit*",
-                        "https://*/*/pulls*"],
+                        "https://*/*/pulls*",
+                        "https://*/*/compare*"],
             "js": ["jquery-1.9.1.min.js", "pullrequest.js"],
             "css": ["pullrequest.css"]
         }
