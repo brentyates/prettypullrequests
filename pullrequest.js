@@ -9,7 +9,7 @@ chrome.storage.sync.get({url: ''}, function(items) {
                 '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
                 '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
             '</span>'
-        ).insertAfter('.actions');
+        ).insertAfter('.actions, .file-actions');
 
         $('<div class="bottom-collapse meta">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
 
