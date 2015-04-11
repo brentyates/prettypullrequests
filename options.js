@@ -1,31 +1,67 @@
+;(function ($) {
+  'use strict';
 
-var previous_value;
-
-// Saves options to chrome.storage
-function save_options () {
-  var url = document.getElementById('url').value;
-
-  if (!url || url === 'https://' || previous_value === url) {
-    return;
+  function saveOptionsToChromeStorage(options, callback) {
+    chrome.storage.sync.set(options, callback);
   }
 
-  chrome.storage.sync.set({
-      url: url
-  }, function () {
-      var status = document.getElementById('status');
-      status.textContent = 'Options saved.';
-      previous_value = url;
-      setTimeout(function () {
-          status.textContent = '';
-      }, 750);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    chrome.storage.sync.get({url: ''}, function(items) {
-        document.getElementById('url').value = items.url;
-        previous_value = items.url;
+  function loadItemsFromChromeStorage(options, callback) {
+    chrome.storage.sync.get(options, function (items) {
+      callback(items);
     });
-    document.getElementById('save').addEventListener('click', save_options);
-});
+  }
 
+  function setFormValues(options) {
+    for (var key in options) {
+      var $formInput = $('#' + key);
+
+      if ($formInput.prop('type') === 'checkbox') {
+        $formInput.prop('checked', options[key]);
+      } else {
+        $formInput.prop('value', options[key]);
+      }
+    }
+  }
+
+  function getChangedValuesObject(changedAttributes) {
+    var updates = {};
+
+    for (var key in changedAttributes) {
+      updates[key] = changedAttributes[key].newValue;
+    }
+
+    return updates;
+  }
+
+  $(document).ready(function () {
+    loadItemsFromChromeStorage({
+      url: '',
+      doJsTree: true,
+      // Add new items here to get them loaded and their values put in the form.
+    }, setFormValues);
+
+    $('#options-form').on('submit', function (e) {
+      e.preventDefault();
+
+      var $form = $(e.currentTarget);
+      var url = $form.find('#url').val();
+      var doJsTree = $form.find('#doJsTree').is(':checked');
+
+      saveOptionsToChromeStorage({
+        'url': url,
+        'doJsTree': doJsTree,
+      }, function () {
+          var status = $('#status');
+          status.text('Options saved.');
+          setTimeout(function () {
+              status.text('');
+          }, 3000);
+      });
+    });
+
+    chrome.storage.onChanged.addListener(function (changes) {
+      // The options were updated, update them here too.
+      setFormValues(getChangedValuesObject(changes));
+    });
+  });
+} (this.$));

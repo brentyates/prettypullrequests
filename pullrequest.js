@@ -1,14 +1,19 @@
 
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 
+$(window).on('hashchange', function(e) {
+  console.log("PJAX yo.");
+});
+
 chrome.storage.sync.get({url: ''}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin
     ) {
-        $('<span class="collapse-lines">' +
-                '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
-                '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
-            '</span>'
+        $(
+          '<span class="collapse-lines">' +
+              '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
+              '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
+          '</span>'
         ).insertAfter('.actions, .file-actions');
 
         $('<div class="bottom-collapse meta">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
@@ -61,7 +66,7 @@ chrome.storage.sync.get({url: ''}, function(items) {
     }
 });
 
-function collapseAdditions () {
+function collapseAdditions() {
     if (isGitHub) {
         $(this).closest('[id^=diff-]').find('.blob-code-addition').parent('tr').slideToggle();
     } else {
@@ -69,7 +74,7 @@ function collapseAdditions () {
     }
 }
 
-function collapseDeletions () {
+function collapseDeletions() {
     if (isGitHub) {
         $(this).closest('[id^=diff-]').find('.blob-code-deletion').parent('tr').slideToggle();
     } else {
@@ -77,21 +82,20 @@ function collapseDeletions () {
     }
 }
 
-function getDiffSpans (path) {
+function getDiffSpans(path) {
     return $('.js-selectable-text').filter(function () {
         return this.innerHTML.trim().match(path);
     });
 }
 
-function collapseDiffs (path) {
+function collapseDiffs(path) {
     var spans = getDiffSpans(path).closest('[id^=diff-]');
     spans.children('.data, .image').slideUp(200);
     spans.children('div.bottom-collapse').hide();
 }
 
-function expandDiffs (path) {
+function expandDiffs(path) {
     var spans = getDiffSpans(path).closest('[id^=diff-]');
     spans.children('.data, .image').slideDown(200);
     spans.children('div.bottom-collapse').show();
 }
-

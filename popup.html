@@ -4,15 +4,14 @@
     <title>Pretty Pull Requests</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="popup.css">
     <link rel="stylesheet" href="jstree/themes/default/style.min.css" />
 </head>
 <body>
-    <div class="input-append">
-        <input class="span2" id="path" type="text" placeholder="Path (Regex)...">
-        <button class="btn" id="collapse"><i class="icon-minus-sign"></i></button>
-        <button class="btn" id="expand"><i class="icon-plus-sign"></i></button>
+    <div class="path-area">
+        <input class="form-control" id="path" type="text" placeholder="Path (Regex)...">
+        <button class="btn btn-default btn-sm" id="collapse"><i class="glyphicon glyphicon-minus"></i></button>
+        <button class="btn btn-default btn-sm" id="expand"><i class="glyphicon glyphicon-plus"></i></button>
     </div>
     <div id="tree"></div>
     <script src="jquery-1.9.1.min.js"></script>
