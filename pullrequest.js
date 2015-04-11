@@ -1,10 +1,6 @@
 
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 
-$(window).on('hashchange', function(e) {
-  console.log("PJAX yo.");
-});
-
 chrome.storage.sync.get({url: ''}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin
