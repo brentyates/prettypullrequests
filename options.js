@@ -36,7 +36,6 @@
   $(document).ready(function () {
     loadItemsFromChromeStorage({
       url: '',
-      doJsTree: true,
       // Add new items here to get them loaded and their values put in the form.
     }, setFormValues);
 
@@ -45,11 +44,9 @@
 
       var $form = $(e.currentTarget);
       var url = $form.find('#url').val();
-      var doJsTree = $form.find('#doJsTree').is(':checked');
 
       saveOptionsToChromeStorage({
         'url': url,
-        'doJsTree': doJsTree,
       }, function () {
           var status = $('#status');
           status.text('Options saved.');
