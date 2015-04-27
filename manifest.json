@@ -5,6 +5,7 @@
     "description": "This extension applies various tweaks to the github pull-request code review pages.",
     "version": "2.3",
     "icons": {
+        "16": "github-icon16.png",
         "48": "github-icon48.png",
         "128": "github-icon128.png"
     },
