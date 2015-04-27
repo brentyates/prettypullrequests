@@ -39,7 +39,7 @@
       // Add new items here to get them loaded and their values put in the form.
     }, setFormValues);
 
-    $('#options-form').on('submit', function (e) {
+    $('#options-form').submit(function (e) {
       e.preventDefault();
 
       var $form = $(e.currentTarget);

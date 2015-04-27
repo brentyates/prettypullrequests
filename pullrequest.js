@@ -2,10 +2,12 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 
 function htmlIsInjected() {
-  return $('.collapse-lines').length !== 0;
+  return document.getElementById('pretty-pull-requests') !== undefined;
 }
 
 function injectHtml() {
+  $('body').prepend('<div id="pretty-pull-requests"></div>');
+
   $('<span class="collapse-lines">' +
         '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
         '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
