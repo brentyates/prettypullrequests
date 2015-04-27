@@ -53,56 +53,54 @@ function convertPathsToNodes(paths) {
     return nodes_flattened;
 }
 
-chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {getPaths: true}, function (response) {
-        chrome.storage.sync.get({doJsTree: false}, function (items) {
-            if (items.doJsTree && response.paths) {
-                var nodes = convertPathsToNodes(response.paths);
-                console.log(nodes);
-                $('#tree').jstree({
-                    'core' : {
-                        'data' : nodes,
-                        'animation': 0,
-                        'themes' : {
-                            'responsive' : false,
-                            'variant' : 'small'
-                        }
-                    },
-                    "plugins" : [ "wholerow", "contextmenu" ],
-                    "contextmenu": {
-                        "items": function ($node) {
-                            var items = {
-                                "Collapse": {
-                                    "label": "Collapse Diff",
-                                    "action": function (obj) {
-                                        port.postMessage({collapse: '^' + $node.id});
-                                    }
-                                },
-                                "Expand": {
-                                    "label": "Expand Diff",
-                                    "action": function (obj) {
-                                        port.postMessage({expand: '^' + $node.id});
-                                    }
-                                },
-                                "Goto": {
-                                    "label": "Jump to Diff",
-                                    "action": function(obj) {
-                                        port.postMessage({goto: $node.id});
-                                    }
-                                }
-                            };
-
-                            if ($node.icon != 'jstree-file') {
-                                delete items.Goto;
-                            }
-
-                            return items;
-                        }
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {getPaths: true}, function(response) {
+        if (response.paths) {
+            var nodes = convertPathsToNodes(response.paths);
+            console.log(nodes);
+            $('#tree').jstree({
+                'core' : {
+                    'data' : nodes,
+                    'animation': 0,
+                    'themes' : {
+                        'responsive' : false,
+                        'variant' : 'small'
                     }
-                }).on("select_node.jstree", function (e, data) {
-                    return data.instance.toggle_node(data.node);
-                });
-            }
-        });
+                },
+                "plugins" : [ "wholerow", "contextmenu" ],
+                "contextmenu": {
+                    "items": function ($node) {
+                        var items = {
+                            "Collapse": {
+                                "label": "Collapse Diff",
+                                "action": function (obj) {
+                                    port.postMessage({collapse: '^' + $node.id});
+                                }
+                            },
+                            "Expand": {
+                                "label": "Expand Diff",
+                                "action": function (obj) {
+                                    port.postMessage({expand: '^' + $node.id});
+                                }
+                            },
+                            "Goto": {
+                                "label": "Jump to Diff",
+                                "action": function(obj) {
+                                    port.postMessage({goto: $node.id});
+                                }
+                            }
+                        };
+
+                        if ($node.icon != 'jstree-file') {
+                            delete items.Goto;
+                        }
+
+                        return items;
+                    }
+                }
+            }).on("select_node.jstree", function (e, data) {
+                return data.instance.toggle_node(data.node);
+            });
+        }
     });
 });
