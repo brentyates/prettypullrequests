@@ -2,18 +2,16 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 
 function htmlIsInjected() {
-  return document.getElementById('pretty-pull-requests') !== undefined;
+  return $('.pretty-pull-requests').length != 0;
 }
 
 function injectHtml() {
-  $('body').prepend('<div id="pretty-pull-requests"></div>');
-
-  $('<span class="collapse-lines">' +
+  $('<span class="pretty-pull-requests collapse-lines">' +
         '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
         '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
     '</span>').insertAfter('.actions, .file-actions');
 
-  $('<div class="bottom-collapse meta">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
+  $('<div class="pretty-pull-requests bottom-collapse">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
 }
 
 function collapseAdditions() {
@@ -54,9 +52,13 @@ chrome.storage.sync.get({url: ''}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
-        if (!htmlIsInjected()) {
-          injectHtml();
+        function injectHtmlIfNecessary() {
+            if (!htmlIsInjected()) {
+                injectHtml();
+            }
+            setTimeout(injectHtmlIfNecessary, 1000);
         }
+        injectHtmlIfNecessary();
 
         var $body = $('body');
 
