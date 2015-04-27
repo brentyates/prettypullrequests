@@ -2,7 +2,7 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 
 function htmlIsInjected() {
-  return $('.pretty-pull-requests').length != 0;
+  return $('.pretty-pull-requests').length !== 0;
 }
 
 function injectHtml() {
@@ -52,12 +52,12 @@ chrome.storage.sync.get({url: ''}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
-        function injectHtmlIfNecessary() {
+        var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
                 injectHtml();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
-        }
+        };
         injectHtmlIfNecessary();
 
         var $body = $('body');
