@@ -1,8 +1,8 @@
 <html>
     <head>
-        <title>Pretty pull requests options</title>
+        <title>Options - Pretty Pull Requests</title>
+        <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="options.css">
-        <script type="text/javascript" src="options.js"></script>
     </head>
     <body>
         <div class="main">
@@ -10,35 +10,23 @@
                 <div class="logo"><img src="github-icon128.png"></div>
             </div>
 
-            <div class="options">
-                <div class="options_header">
-                    Options
-                </div>
-                <div class="option">
-                    <div class="option_title">
-                        Github enterprise URL
-                    </div>
-                    <div class="option_content">
-                        <ul>
-                            <li><input id="url" type="text" size="25"></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="option">
-                    <div class="option_title">
-                        Save
-                    </div>
-                    <div class="option_content">
-                        <ul>
-                            <li>
-                                <button id="save">Save</button>
-                                <div id="status"></div>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="panel">
+                <div class="panel-body">
+                    <form id="options-form">
+                        <h1>Options</h1>
+                        <div class="form-group">
+                            <label for="url">
+                                Github Enterprise URL
+                            </label>
+                            <input id="url" type="url" class="form-control">
+                        </div>
+                        <button class="btn btn-primary" id="save">Save</button>
+                    </form>
+                    <div id="status" class="bg-success"></div>
                 </div>
             </div>
         </div>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="options.js"></script>
     </body>
 </html>
-

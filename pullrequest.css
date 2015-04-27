@@ -18,18 +18,10 @@
 
 .bottom-collapse {
     cursor: pointer;
-    font-family: Monaco, 'Liberation Mono', Courier, monospace;
+    font: 13px/1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
     text-align: center !important;
     margin: 0;
-}
-
-.bottom-collapse {
-    cursor: pointer;
-    font-family: Monaco, 'Liberation Mono', Courier, monospace;
-    text-align: center !important;
-    margin: 0;
-}
-
-.bottom-collapse.meta {
-    border-bottom: none !important;
+    padding: 2px;
+    background-color: #f7f7f7;
+    border-top: 1px solid #d8d8d8
 }

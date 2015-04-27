@@ -1,3 +1,13 @@
 body {
     padding: 10px;
+    min-width: 260px;
+}
+
+#path {
+    width: 68%;
+    display: inline;
+}
+
+#tree {
+    margin-top: 10px;
 }
