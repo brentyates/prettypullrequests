@@ -48,6 +48,34 @@ function expandDiffs(path) {
     spans.children('div.bottom-collapse').show();
 }
 
+function moveToNextTab($pullRequestTabs, $selectedTab) {
+  if ($selectedTab.get(0) === $pullRequestTabs.get(-1)) {
+    // We're on the last tab. Click on the first one.
+    $pullRequestTabs.first().simulate('click');
+  } else {
+    // Get the tab index we're on.
+    var tabIndex = $pullRequestTabs.index($selectedTab);
+    // Click on the next tab.
+    tabIndex += 1;
+    // Wrap the tab in a jQuery object so we can click on it.
+    $($pullRequestTabs.get(tabIndex)).simulate('click');
+  }
+}
+
+function moveToPreviousTab($pullRequestTabs, $selectedTab) {
+  if ($selectedTab.get(0) === $pullRequestTabs.get(0)) {
+    // We're on the first tab. Click on the last one.
+    $pullRequestTabs.last().simulate('click');
+  } else {
+    // Get the tab index we're on.
+    var tabIndex = $pullRequestTabs.index($selectedTab);
+    // Click on the previous tab.
+    tabIndex -= 1;
+    // Wrap the tab in a jQuery object so we can click on it.
+    $($pullRequestTabs.get(tabIndex)).simulate('click');
+  }
+}
+
 chrome.storage.sync.get({url: ''}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
@@ -76,6 +104,24 @@ chrome.storage.sync.get({url: ''}, function(items) {
         $body.on('click', '.js-collapse-additions', collapseAdditions);
 
         $body.on('click', '.js-collapse-deletions', collapseDeletions);
+
+        var $pullRequestTabs = $('.js-pull-request-tab');
+
+        $body.on('keydown', function (e) {
+          if (e.keyCode !== 192) {
+            return;
+          }
+
+          var $selectedTab = $('.js-pull-request-tab.selected');
+
+          if (e.shiftKey) {
+            // Making this work like it would in other apps, where the shift
+            // key makes the cmd+tilde go backwards through the list.
+            moveToPreviousTab($pullRequestTabs, $selectedTab);
+          } else {
+            moveToNextTab($pullRequestTabs, $selectedTab);
+          }
+        });
 
         // Actions per changed file
         chrome.runtime.onConnect.addListener(function (port) {
