@@ -93,7 +93,6 @@ chrome.storage.sync.get({url: ''}, function(items) {
 
         $body.on('click', '.js-collapse-deletions', collapseDeletions);
 
-
         $body.on('keydown', function (e) {
             if (e.keyCode !== 192) {
                 return;
