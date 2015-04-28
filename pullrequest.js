@@ -48,32 +48,20 @@ function expandDiffs(path) {
     spans.children('div.bottom-collapse').show();
 }
 
-function moveToNextTab($pullRequestTabs, $selectedTab) {
-  if ($selectedTab.get(0) === $pullRequestTabs.get(-1)) {
-    // We're on the last tab. Click on the first one.
-    $pullRequestTabs.first().simulate('click');
-  } else {
-    // Get the tab index we're on.
-    var tabIndex = $pullRequestTabs.index($selectedTab);
-    // Click on the next tab.
-    tabIndex += 1;
-    // Wrap the tab in a jQuery object so we can click on it.
-    $($pullRequestTabs.get(tabIndex)).simulate('click');
-  }
+function moveToNextTab($pullRequestTabs, selectedTabIndex) {
+    selectedTabIndex += 1;
+    if (selectedTabIndex >= $pullRequestTabs.length) {
+        selectedTabIndex = 0;
+    }
+    $pullRequestTabs[selectedTabIndex].click();
 }
 
-function moveToPreviousTab($pullRequestTabs, $selectedTab) {
-  if ($selectedTab.get(0) === $pullRequestTabs.get(0)) {
-    // We're on the first tab. Click on the last one.
-    $pullRequestTabs.last().simulate('click');
-  } else {
-    // Get the tab index we're on.
-    var tabIndex = $pullRequestTabs.index($selectedTab);
-    // Click on the previous tab.
-    tabIndex -= 1;
-    // Wrap the tab in a jQuery object so we can click on it.
-    $($pullRequestTabs.get(tabIndex)).simulate('click');
-  }
+function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
+    selectedTabIndex -= 1;
+    if (selectedTabIndex < 0) {
+        selectedTabIndex = $pullRequestTabs.length - 1;
+    }
+    $pullRequestTabs[selectedTabIndex].click();
 }
 
 chrome.storage.sync.get({url: ''}, function(items) {
@@ -105,22 +93,22 @@ chrome.storage.sync.get({url: ''}, function(items) {
 
         $body.on('click', '.js-collapse-deletions', collapseDeletions);
 
-        var $pullRequestTabs = $('.js-pull-request-tab');
 
         $body.on('keydown', function (e) {
-          if (e.keyCode !== 192) {
-            return;
-          }
+            if (e.keyCode !== 192) {
+                return;
+            }
 
-          var $selectedTab = $('.js-pull-request-tab.selected');
+            var $pullRequestTabs = $('.js-pull-request-tab');
+            var selectedTabIndex = $('.js-pull-request-tab.selected').index();
 
-          if (e.shiftKey) {
-            // Making this work like it would in other apps, where the shift
-            // key makes the cmd+tilde go backwards through the list.
-            moveToPreviousTab($pullRequestTabs, $selectedTab);
-          } else {
-            moveToNextTab($pullRequestTabs, $selectedTab);
-          }
+            if (e.shiftKey) {
+                // Making this work like it would in other apps, where the shift
+                // key makes the cmd+tilde go backwards through the list.
+                moveToPreviousTab($pullRequestTabs, selectedTabIndex);
+            } else {
+                moveToNextTab($pullRequestTabs, selectedTabIndex);
+            }
         });
 
         // Actions per changed file
