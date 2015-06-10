@@ -36,6 +36,7 @@
   $(document).ready(function () {
     loadItemsFromChromeStorage({
       url: '',
+      tabSwitchingEnabled: false
       // Add new items here to get them loaded and their values put in the form.
     }, setFormValues);
 
@@ -44,9 +45,11 @@
 
       var $form = $(e.currentTarget);
       var url = $form.find('#url').val();
+      var tabSwitchingEnabled = $form.find('#tabSwitchingEnabled').prop('checked');
 
       saveOptionsToChromeStorage({
         'url': url,
+        'tabSwitchingEnabled': tabSwitchingEnabled,
       }, function () {
           var status = $('#status');
           status.text('Options saved.');

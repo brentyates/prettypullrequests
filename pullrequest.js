@@ -64,7 +64,7 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
     $pullRequestTabs[selectedTabIndex].click();
 }
 
-chrome.storage.sync.get({url: ''}, function(items) {
+chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
@@ -93,22 +93,24 @@ chrome.storage.sync.get({url: ''}, function(items) {
 
         $body.on('click', '.js-collapse-deletions', collapseDeletions);
 
-        $body.on('keydown', function (e) {
-            if (e.keyCode !== 192 || e.target.nodeName === 'TEXTAREA') {
-                return;
-            }
+        if (items.tabSwitchingEnabled) {
+          $body.on('keydown', function (e) {
+              if (e.keyCode !== 192 || e.target.nodeName === 'TEXTAREA') {
+                  return;
+              }
 
-            var $pullRequestTabs = $('.js-pull-request-tab');
-            var selectedTabIndex = $('.js-pull-request-tab.selected').index();
+              var $pullRequestTabs = $('.js-pull-request-tab');
+              var selectedTabIndex = $('.js-pull-request-tab.selected').index();
 
-            if (e.shiftKey) {
-                // Making this work like it would in other apps, where the shift
-                // key makes the cmd+tilde go backwards through the list.
-                moveToPreviousTab($pullRequestTabs, selectedTabIndex);
-            } else {
-                moveToNextTab($pullRequestTabs, selectedTabIndex);
-            }
-        });
+              if (e.shiftKey) {
+                  // Making this work like it would in other apps, where the shift
+                  // key makes the cmd+tilde go backwards through the list.
+                  moveToPreviousTab($pullRequestTabs, selectedTabIndex);
+              } else {
+                  moveToNextTab($pullRequestTabs, selectedTabIndex);
+              }
+          });
+        }
 
         // Actions per changed file
         chrome.runtime.onConnect.addListener(function (port) {
