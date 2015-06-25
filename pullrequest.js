@@ -2,7 +2,7 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 
 function htmlIsInjected() {
-  return $('.pretty-pull-requests').length != 0;
+  return $('.pretty-pull-requests').length !== 0;
 }
 
 function injectHtml() {
@@ -48,16 +48,32 @@ function expandDiffs(path) {
     spans.children('div.bottom-collapse').show();
 }
 
-chrome.storage.sync.get({url: ''}, function(items) {
+function moveToNextTab($pullRequestTabs, selectedTabIndex) {
+    selectedTabIndex += 1;
+    if (selectedTabIndex >= $pullRequestTabs.length) {
+        selectedTabIndex = 0;
+    }
+    $pullRequestTabs[selectedTabIndex].click();
+}
+
+function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
+    selectedTabIndex -= 1;
+    if (selectedTabIndex < 0) {
+        selectedTabIndex = $pullRequestTabs.length - 1;
+    }
+    $pullRequestTabs[selectedTabIndex].click();
+}
+
+chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
-        function injectHtmlIfNecessary() {
+        var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
                 injectHtml();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
-        }
+        };
         injectHtmlIfNecessary();
 
         var $body = $('body');
@@ -76,6 +92,25 @@ chrome.storage.sync.get({url: ''}, function(items) {
         $body.on('click', '.js-collapse-additions', collapseAdditions);
 
         $body.on('click', '.js-collapse-deletions', collapseDeletions);
+
+        if (items.tabSwitchingEnabled) {
+          $body.on('keydown', function (e) {
+              if (e.keyCode !== 192 || e.target.nodeName === 'TEXTAREA') {
+                  return;
+              }
+
+              var $pullRequestTabs = $('.js-pull-request-tab');
+              var selectedTabIndex = $('.js-pull-request-tab.selected').index();
+
+              if (e.shiftKey) {
+                  // Making this work like it would in other apps, where the shift
+                  // key makes the cmd+tilde go backwards through the list.
+                  moveToPreviousTab($pullRequestTabs, selectedTabIndex);
+              } else {
+                  moveToNextTab($pullRequestTabs, selectedTabIndex);
+              }
+          });
+        }
 
         // Actions per changed file
         chrome.runtime.onConnect.addListener(function (port) {
