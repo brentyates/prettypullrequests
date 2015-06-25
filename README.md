@@ -8,3 +8,5 @@ Current Features:
 - Collapse/Expand all that match a regex pattern
 - Collapse/Expand added/removed lines
 - File tree view allowing you to collapse a directory, or jump directly to a file diff
+
+To install the chrome extension, visit:  https://chrome.google.com/webstore/detail/pretty-pull-requests-gith/ljnjpkadhhcdniohpfilddnhahoigdec?hl=en
