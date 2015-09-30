@@ -31,7 +31,7 @@ function collapseDeletions() {
 }
 
 function getDiffSpans(path) {
-    return $('.user-select-contain').filter(function () {
+    return $('.user-select-contain, .js-selectable-text').filter(function () {
         return this.innerHTML.trim().match(path);
     });
 }
@@ -78,7 +78,7 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
 
         var $body = $('body');
 
-        $body.on('click', '.user-select-contain, .bottom-collapse', function (e) {
+        $body.on('click', '.user-select-contain, .js-selectable-text, .bottom-collapse', function (e) {
             var span = $(this).closest('[id^=diff-]');
             span.children('.data, .image').slideToggle(200);
             if ($(e.target).hasClass('bottom-collapse')) {
@@ -132,7 +132,7 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
         // Create the tree with the changed files after pressing the octocat button
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if (request.getPaths) {
-                var paths = $.map($('.file .user-select-contain'), function (item) {
+                var paths = $.map($('.file .user-select-contain, .file .js-selectable-text'), function (item) {
                     return $.trim(item.innerHTML);
                 });
                 if (paths.length > 0) {
