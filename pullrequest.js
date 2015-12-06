@@ -64,6 +64,39 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
     $pullRequestTabs[selectedTabIndex].click();
 }
 
+function toggleDiff(id, duration, display) {
+    var $a = $('a[name^=' + id + ']');
+
+    duration = duration ? duration : 200;
+
+    if (display != 'show' && display != 'hide') {
+        display = localStorage.getItem(id) === 'hide' ? 'show' : 'hide';
+    }
+
+    if ($a) {
+        var $span = $a.next('div[id^=diff-]');
+        var $data = $span.children('.data, .image');
+        var $bottom = $span.children('.bottom-collapse');
+
+        if (display === 'show') {
+            $data.slideDown(duration);
+            $bottom.show();
+        } else {
+            $data.slideUp(duration);
+            $bottom.hide();
+        }
+
+        return localStorage.setItem(id, display);
+    }
+    return false;
+}
+
+function clickDiff(event) {
+    var id = $(this).closest('[id^=diff-]').prev('a[name^=diff-]').attr('name');
+
+    return toggleDiff(id);
+}
+
 chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
@@ -78,16 +111,7 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
 
         var $body = $('body');
 
-        $body.on('click', '.user-select-contain, .js-selectable-text, .bottom-collapse', function (e) {
-            var span = $(this).closest('[id^=diff-]');
-            span.children('.data, .image').slideToggle(200);
-            if ($(e.target).hasClass('bottom-collapse')) {
-                $(this).closest('div.bottom-collapse').toggle();
-            } else {
-                span.children('div.bottom-collapse').toggle();
-            }
-            span.children('.meta')[0].scrollIntoViewIfNeeded();
-        });
+        $body.on('click', '.user-select-contain, .js-selectable-text, .bottom-collapse', clickDiff);
 
         $body.on('click', '.js-collapse-additions', collapseAdditions);
 
