@@ -78,6 +78,14 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
     $pullRequestTabs[selectedTabIndex].click();
 }
 
+function getIdFromPath(path) {
+    var $span = $('span[title="' + path + '"]').closest('[id^=diff-]');
+    var $a = $span.prev('a[name^=diff-]');
+    var id = $a.attr('name');
+
+    return id;
+}
+
 function initDiffs() {
     $('a[name^=diff-]').each(function(index, item) {
         var id = $(item).attr('name');
@@ -115,10 +123,19 @@ function toggleDiff(id, duration, display) {
     return false;
 }
 
-function clickDiff(event) {
-    var id = $(this).closest('[id^=diff-]').prev('a[name^=diff-]').attr('name');
+function clickTitle(event) {
+    var path = $(this).attr('title');
+    var id = getIdFromPath(path);
 
     return toggleDiff(id);
+}
+
+function clickCollapse(event) {
+    var $span = $(this).prevAll('.file-header');
+    var path = $span.attr('data-path');
+    var id = getIdFromPath(path);
+
+    return toggleDiff(id, '200', 'hide');
 }
 
 chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
@@ -136,7 +153,9 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
 
         var $body = $('body');
 
-        $body.on('click', '.user-select-contain, .js-selectable-text, .bottom-collapse', clickDiff);
+        $body.on('click', '.user-select-contain, .js-selectable-text', clickTitle);
+
+        $body.on('click', '.bottom-collapse', clickCollapse);
 
         $body.on('click', '.js-collapse-additions', collapseAdditions);
 
