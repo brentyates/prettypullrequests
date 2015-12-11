@@ -36,16 +36,30 @@ function getDiffSpans(path) {
     });
 }
 
+function getIds(path) {
+    var $spans = getDiffSpans(path).closest('[id^=diff-]');
+    var $as = $spans.prev('a[name^=diff-]');
+    var ids = $as.map(function(index, a) {
+        return $(a).attr('name');
+    });
+
+    return ids;
+}
+
 function collapseDiffs(path) {
-    var spans = getDiffSpans(path).closest('[id^=diff-]');
-    spans.children('.data, .image').slideUp(200);
-    spans.children('div.bottom-collapse').hide();
+    var ids = getIds(path);
+
+    ids.each(function(index, id) {
+        toggleDiff(id, 200, 'hide');
+    });
 }
 
 function expandDiffs(path) {
-    var spans = getDiffSpans(path).closest('[id^=diff-]');
-    spans.children('.data, .image').slideDown(200);
-    spans.children('div.bottom-collapse').show();
+    var ids = getIds(path);
+
+    ids.each(function(index, id) {
+        toggleDiff(id, 200, 'show');
+    });
 }
 
 function moveToNextTab($pullRequestTabs, selectedTabIndex) {
