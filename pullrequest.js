@@ -64,9 +64,10 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
     $pullRequestTabs[selectedTabIndex].click();
 }
 
-function hideDiffs() {
-    var $a = $('a[name^=diff-]').each(function(index, item) {
+function initDiffs() {
+    $('a[name^=diff-]').each(function(index, item) {
         var id = $(item).attr('name');
+
         if (localStorage.getItem(id) === 'hide') {
             toggleDiff(id, 0, 'hide');
         }
@@ -113,7 +114,7 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
                 injectHtml();
-                hideDiffs();
+                initDiffs();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
