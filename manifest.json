@@ -3,11 +3,11 @@
 
     "name": "Pretty Pull Requests (Github)",
     "description": "This extension applies various tweaks to the github pull-request code review pages.",
-    "version": "2.5.1",
+    "version": "2.6.0",
     "icons": {
-        "16": "github-icon16.png",
-        "48": "github-icon48.png",
-        "128": "github-icon128.png"
+        "32": "ppr-logo/32x32.png",
+        "64": "ppr-logo/64x64.png",
+        "128": "ppr-logo/128x128.png"
     },
 
     "background": {
@@ -34,7 +34,7 @@
     ],
 
     "page_action": {
-        "default_icon": "github-icon48.png",
+        "default_icon": "ppr-logo/128x128.png",
         "default_title": "Pretty Pull Requests",
         "default_popup": "popup.html"
     },
