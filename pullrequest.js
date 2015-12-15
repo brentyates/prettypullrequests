@@ -46,6 +46,14 @@ function getIds(path) {
     return ids;
 }
 
+function getId(path) {
+    var $span = $('span[title="' + path + '"]').closest('[id^=diff-]');
+    var $a = $span.prev('a[name^=diff-]');
+    var id = $a.attr('name');
+
+    return id;
+}
+
 function collapseDiffs(path) {
     var ids = getIds(path);
 
@@ -76,14 +84,6 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
         selectedTabIndex = $pullRequestTabs.length - 1;
     }
     $pullRequestTabs[selectedTabIndex].click();
-}
-
-function getIdFromPath(path) {
-    var $span = $('span[title="' + path + '"]').closest('[id^=diff-]');
-    var $a = $span.prev('a[name^=diff-]');
-    var id = $a.attr('name');
-
-    return id;
 }
 
 function initDiffs() {
@@ -125,7 +125,7 @@ function toggleDiff(id, duration, display) {
 
 function clickTitle(event) {
     var path = $(this).attr('title');
-    var id = getIdFromPath(path);
+    var id = getId(path);
 
     return toggleDiff(id);
 }
@@ -133,7 +133,7 @@ function clickTitle(event) {
 function clickCollapse(event) {
     var $span = $(this).prevAll('.file-header');
     var path = $span.attr('data-path');
-    var id = getIdFromPath(path);
+    var id = getId(path);
 
     return toggleDiff(id, '200', 'hide');
 }
