@@ -39,11 +39,11 @@ function getDiffSpans(path) {
 function getIds(path) {
     var $spans = getDiffSpans(path).closest('[id^=diff-]');
     var $as = $spans.prev('a[name^=diff-]');
-    var ids = $as.map(function(index, a) {
+    var $ids = $as.map(function(index, a) {
         return $(a).attr('name');
     });
 
-    return ids;
+    return $ids;
 }
 
 function getId(path) {
@@ -54,19 +54,11 @@ function getId(path) {
     return id;
 }
 
-function collapseDiffs(path) {
-    var ids = getIds(path);
+function toggleDiffs(path, display) {
+    var $ids = getIds(path);
 
-    ids.each(function(index, id) {
-        toggleDiff(id, 200, 'hide');
-    });
-}
-
-function expandDiffs(path) {
-    var ids = getIds(path);
-
-    ids.each(function(index, id) {
-        toggleDiff(id, 200, 'show');
+    $ids.each(function(index, id) {
+        toggleDiff(id, 200, display);
     });
 }
 
@@ -186,10 +178,10 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
 
             port.onMessage.addListener(function (msg) {
                 if (msg.collapse !== undefined) {
-                    collapseDiffs(msg.collapse);
+                    toggleDiffs(msg.collapse, 'hide');
                 }
                 if (msg.expand !== undefined) {
-                    expandDiffs(msg.expand);
+                    toggleDiffs(msg.expand, 'show');
                 }
                 if (msg.goto !== undefined) {
                     getDiffSpans(msg.goto)[0].scrollIntoViewIfNeeded();
