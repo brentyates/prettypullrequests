@@ -93,8 +93,8 @@ function toggleDiff(id, duration, display) {
 
     duration = duration ? duration : 200;
 
-    if (display != 'show' && display != 'hide') {
-        display = localStorage.getItem(id) === 'hide' ? 'show' : 'hide';
+    if (display !== 'show' && display !== 'hide') {
+        display = (localStorage.getItem(id) === 'hide') ? 'show' : 'hide';
     }
 
     if ($a) {
