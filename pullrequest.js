@@ -54,6 +54,33 @@ function getId(path) {
     return id;
 }
 
+function toggleDiff(id, duration, display) {
+    var $a = $('a[name^=' + id + ']');
+
+    duration = !isNaN(duration) ? duration : 200;
+
+    if (display !== 'expand' && display !== 'collapse') {
+        display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+    }
+
+    if ($a) {
+        var $span = $a.next('div[id^=diff-]');
+        var $data = $span.children('.data, .image');
+        var $bottom = $span.children('.bottom-collapse');
+
+        if (display === 'expand') {
+            $data.slideDown(duration);
+            $bottom.show();
+            return localStorage.removeItem(id);
+        }
+
+        $data.slideUp(duration);
+        $bottom.hide();
+        return localStorage.setItem(id, display);
+    }
+    return false;
+}
+
 function toggleDiffs(path, display) {
     var $ids = getIds(path);
 
@@ -82,52 +109,25 @@ function initDiffs() {
     $('a[name^=diff-]').each(function(index, item) {
         var id = $(item).attr('name');
 
-        if (localStorage.getItem(id) === 'hide') {
-            toggleDiff(id, 0, 'hide');
+        if (localStorage.getItem(id) === 'collapse') {
+            toggleDiff(id, 0, 'collapse');
         }
     });
 }
 
-function toggleDiff(id, duration, display) {
-    var $a = $('a[name^=' + id + ']');
-
-    duration = duration ? duration : 200;
-
-    if (display !== 'show' && display !== 'hide') {
-        display = (localStorage.getItem(id) === 'hide') ? 'show' : 'hide';
-    }
-
-    if ($a) {
-        var $span = $a.next('div[id^=diff-]');
-        var $data = $span.children('.data, .image');
-        var $bottom = $span.children('.bottom-collapse');
-
-        if (display === 'show') {
-            $data.slideDown(duration);
-            $bottom.show();
-        } else {
-            $data.slideUp(duration);
-            $bottom.hide();
-        }
-
-        return localStorage.setItem(id, display);
-    }
-    return false;
-}
-
-function clickTitle(event) {
+function clickTitle() {
     var path = $(this).attr('title');
     var id = getId(path);
 
     return toggleDiff(id);
 }
 
-function clickCollapse(event) {
+function clickCollapse() {
     var $span = $(this).prevAll('.file-header');
     var path = $span.attr('data-path');
     var id = getId(path);
 
-    return toggleDiff(id, '200', 'hide');
+    return toggleDiff(id, '200', 'collapse');
 }
 
 chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
@@ -178,10 +178,10 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
 
             port.onMessage.addListener(function (msg) {
                 if (msg.collapse !== undefined) {
-                    toggleDiffs(msg.collapse, 'hide');
+                    toggleDiffs(msg.collapse, 'collapse');
                 }
                 if (msg.expand !== undefined) {
-                    toggleDiffs(msg.expand, 'show');
+                    toggleDiffs(msg.expand, 'expand');
                 }
                 if (msg.goto !== undefined) {
                     getDiffSpans(msg.goto)[0].scrollIntoViewIfNeeded();
