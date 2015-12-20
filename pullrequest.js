@@ -1,5 +1,5 @@
-
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
+var useLocalStorage = true;
 
 function htmlIsInjected() {
   return $('.pretty-pull-requests').length !== 0;
@@ -59,8 +59,13 @@ function toggleDiff(id, duration, display) {
 
     duration = !isNaN(duration) ? duration : 200;
 
-    if (display !== 'expand' && display !== 'collapse') {
-        display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+
+    if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
+        if (!useLocalStorage) {
+            display = 'toggle';
+        } else {
+            display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+        }
     }
 
     if ($a) {
@@ -68,15 +73,20 @@ function toggleDiff(id, duration, display) {
         var $data = $span.children('.data, .image');
         var $bottom = $span.children('.bottom-collapse');
 
-        if (display === 'expand') {
-            $data.slideDown(duration);
-            $bottom.show();
-            return localStorage.removeItem(id);
+        switch (display) {
+            case 'toggle':
+                $data.toggle(duration);
+                $bottom.toggle();
+                return true;
+            case 'expand':
+                $data.slideDown(duration);
+                $bottom.show();
+                return useLocalStorage ? localStorage.removeItem(id) : true;
+            default:
+                $data.slideUp(duration);
+                $bottom.hide();
+                return useLocalStorage ? localStorage.setItem(id, display) : true;
         }
-
-        $data.slideUp(duration);
-        $bottom.hide();
-        return localStorage.setItem(id, display);
     }
     return false;
 }
@@ -106,13 +116,15 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
 }
 
 function initDiffs() {
-    $('a[name^=diff-]').each(function(index, item) {
-        var id = $(item).attr('name');
+    if (useLocalStorage) {
+        $('a[name^=diff-]').each(function(index, item) {
+            var id = $(item).attr('name');
 
-        if (localStorage.getItem(id) === 'collapse') {
-            toggleDiff(id, 0, 'collapse');
-        }
-    });
+            if (localStorage.getItem(id) === 'collapse') {
+                toggleDiff(id, 0, 'collapse');
+            }
+        });
+    }
 }
 
 function clickTitle() {
@@ -130,7 +142,7 @@ function clickCollapse() {
     return toggleDiff(id, '200', 'collapse');
 }
 
-chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
+chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
@@ -141,9 +153,10 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
-        injectHtmlIfNecessary();
-
         var $body = $('body');
+        useLocalStorage = items.saveCollapsedDiffs;
+
+        injectHtmlIfNecessary();
 
         $body.on('click', '.user-select-contain, .js-selectable-text', clickTitle);
 
