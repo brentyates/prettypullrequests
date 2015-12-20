@@ -73,13 +73,13 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                             "Collapse": {
                                 "label": "Collapse Diff",
                                 "action": function (obj) {
-                                    port.postMessage({collapse: $node.id});
+                                    port.postMessage({collapse: '^' + $node.id});
                                 }
                             },
                             "Expand": {
                                 "label": "Expand Diff",
                                 "action": function (obj) {
-                                    port.postMessage({expand: $node.id});
+                                    port.postMessage({expand: '^' + $node.id});
                                 }
                             },
                             "Goto": {
