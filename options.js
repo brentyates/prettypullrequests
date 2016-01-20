@@ -36,6 +36,7 @@
   $(document).ready(function () {
     loadItemsFromChromeStorage({
       url: '',
+      saveCollapsedDiffs: true,
       tabSwitchingEnabled: false
       // Add new items here to get them loaded and their values put in the form.
     }, setFormValues);
@@ -45,11 +46,13 @@
 
       var $form = $(e.currentTarget);
       var url = $form.find('#url').val();
+      var saveCollapsedDiffs = $form.find('#saveCollapsedDiffs').prop('checked');
       var tabSwitchingEnabled = $form.find('#tabSwitchingEnabled').prop('checked');
 
       saveOptionsToChromeStorage({
         'url': url,
-        'tabSwitchingEnabled': tabSwitchingEnabled,
+        'saveCollapsedDiffs': saveCollapsedDiffs,
+        'tabSwitchingEnabled': tabSwitchingEnabled
       }, function () {
           var status = $('#status');
           status.text('Options saved.');

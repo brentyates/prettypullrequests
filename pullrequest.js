@@ -1,5 +1,5 @@
-
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
+var useLocalStorage = true;
 
 function htmlIsInjected() {
   return $('.pretty-pull-requests').length !== 0;
@@ -36,16 +36,66 @@ function getDiffSpans(path) {
     });
 }
 
-function collapseDiffs(path) {
-    var spans = getDiffSpans(path).closest('[id^=diff-]');
-    spans.children('.data, .image').slideUp(200);
-    spans.children('div.bottom-collapse').hide();
+function getIds(path) {
+    var $spans = getDiffSpans(path).closest('[id^=diff-]');
+    var $as = $spans.prev('a[name^=diff-]');
+    var $ids = $as.map(function(index, a) {
+        return $(a).attr('name');
+    });
+
+    return $ids;
 }
 
-function expandDiffs(path) {
-    var spans = getDiffSpans(path).closest('[id^=diff-]');
-    spans.children('.data, .image').slideDown(200);
-    spans.children('div.bottom-collapse').show();
+function getId(path) {
+    var $span = $('span[title="' + path + '"]').closest('[id^=diff-]');
+    var $a = $span.prev('a[name^=diff-]');
+    var id = $a.attr('name');
+
+    return id;
+}
+
+function toggleDiff(id, duration, display) {
+    var $a = $('a[name^=' + id + ']');
+
+    duration = !isNaN(duration) ? duration : 200;
+
+    if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
+        if (!useLocalStorage) {
+            display = 'toggle';
+        } else {
+            display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+        }
+    }
+
+    if ($a) {
+        var $span = $a.next('div[id^=diff-]');
+        var $data = $span.children('.data, .image');
+        var $bottom = $span.children('.bottom-collapse');
+
+        switch (display) {
+            case 'toggle':
+                $data.toggle(duration);
+                $bottom.toggle();
+                return true;
+            case 'expand':
+                $data.slideDown(duration);
+                $bottom.show();
+                return useLocalStorage ? localStorage.removeItem(id) : true;
+            default:
+                $data.slideUp(duration);
+                $bottom.hide();
+                return useLocalStorage ? localStorage.setItem(id, display) : true;
+        }
+    }
+    return false;
+}
+
+function toggleDiffs(path, display) {
+    var $ids = getIds(path);
+
+    $ids.each(function(index, id) {
+        toggleDiff(id, 200, display);
+    });
 }
 
 function moveToNextTab($pullRequestTabs, selectedTabIndex) {
@@ -64,30 +114,52 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
     $pullRequestTabs[selectedTabIndex].click();
 }
 
-chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
+function initDiffs() {
+    if (useLocalStorage) {
+        $('a[name^=diff-]').each(function(index, item) {
+            var id = $(item).attr('name');
+
+            if (localStorage.getItem(id) === 'collapse') {
+                toggleDiff(id, 0, 'collapse');
+            }
+        });
+    }
+}
+
+function clickTitle() {
+    var path = $(this).attr('title');
+    var id = getId(path);
+
+    return toggleDiff(id);
+}
+
+function clickCollapse() {
+    var $span = $(this).prevAll('.file-header');
+    var path = $span.attr('data-path');
+    var id = getId(path);
+
+    return toggleDiff(id, '200', 'collapse');
+}
+
+chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
                 injectHtml();
+                initDiffs();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
+        var $body = $('body');
+        useLocalStorage = items.saveCollapsedDiffs;
+
         injectHtmlIfNecessary();
 
-        var $body = $('body');
+        $body.on('click', '.user-select-contain, .js-selectable-text', clickTitle);
 
-        $body.on('click', '.user-select-contain, .js-selectable-text, .bottom-collapse', function (e) {
-            var span = $(this).closest('[id^=diff-]');
-            span.children('.data, .image').slideToggle(200);
-            if ($(e.target).hasClass('bottom-collapse')) {
-                $(this).closest('div.bottom-collapse').toggle();
-            } else {
-                span.children('div.bottom-collapse').toggle();
-            }
-            span.children('.meta')[0].scrollIntoViewIfNeeded();
-        });
+        $body.on('click', '.bottom-collapse', clickCollapse);
 
         $body.on('click', '.js-collapse-additions', collapseAdditions);
 
@@ -118,10 +190,10 @@ chrome.storage.sync.get({url: '', tabSwitchingEnabled: false}, function(items) {
 
             port.onMessage.addListener(function (msg) {
                 if (msg.collapse !== undefined) {
-                    collapseDiffs(msg.collapse);
+                    toggleDiffs(msg.collapse, 'collapse');
                 }
                 if (msg.expand !== undefined) {
-                    expandDiffs(msg.expand);
+                    toggleDiffs(msg.expand, 'expand');
                 }
                 if (msg.goto !== undefined) {
                     getDiffSpans(msg.goto)[0].scrollIntoViewIfNeeded();
