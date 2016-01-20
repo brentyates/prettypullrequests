@@ -59,7 +59,6 @@ function toggleDiff(id, duration, display) {
 
     duration = !isNaN(duration) ? duration : 200;
 
-
     if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
         if (!useLocalStorage) {
             display = 'toggle';
