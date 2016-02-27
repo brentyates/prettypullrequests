@@ -36,6 +36,13 @@ function getDiffSpans(path) {
     });
 }
 
+function getCurrentPrId() {
+    var prId = $('meta[name=session-resume-id]').attr('content')
+        || '/' + document.URL.split('/').slice(3).join('/');
+
+    return prId + '/';
+}
+
 function getIds(path) {
     var $spans = getDiffSpans(path).closest('[id^=diff-]');
     var $as = $spans.prev('a[name^=diff-]');
@@ -55,6 +62,7 @@ function getId(path) {
 }
 
 function toggleDiff(id, duration, display) {
+    var prId = getCurrentPrId();
     var $a = $('a[name^=' + id + ']');
 
     duration = !isNaN(duration) ? duration : 200;
@@ -63,7 +71,7 @@ function toggleDiff(id, duration, display) {
         if (!useLocalStorage) {
             display = 'toggle';
         } else {
-            display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+            display = (localStorage.getItem(prId + id) === 'collapse') ? 'expand' : 'collapse';
         }
     }
 
@@ -80,11 +88,11 @@ function toggleDiff(id, duration, display) {
             case 'expand':
                 $data.slideDown(duration);
                 $bottom.show();
-                return useLocalStorage ? localStorage.removeItem(id) : true;
+                return useLocalStorage ? localStorage.removeItem(prId + id) : true;
             default:
                 $data.slideUp(duration);
                 $bottom.hide();
-                return useLocalStorage ? localStorage.setItem(id, display) : true;
+                return useLocalStorage ? localStorage.setItem(prId + id, display) : true;
         }
     }
     return false;
@@ -116,10 +124,12 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
 
 function initDiffs() {
     if (useLocalStorage) {
+        var prId = getCurrentPrId();
+
         $('a[name^=diff-]').each(function(index, item) {
             var id = $(item).attr('name');
 
-            if (localStorage.getItem(id) === 'collapse') {
+            if (localStorage.getItem(prId + id) === 'collapse') {
                 toggleDiff(id, 0, 'collapse');
             }
         });
