@@ -38,7 +38,7 @@ function getDiffSpans(path) {
 
 function getCurrentPrId() {
     var prId = $('meta[name=session-resume-id]').attr('content')
-        || '/' + document.URL.split('/').slice(3).join('/');
+        || '/' + document.URL.split('/').slice(-4).join('/');
 
     return prId + '/';
 }
