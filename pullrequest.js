@@ -1,5 +1,9 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 var useLocalStorage = true;
+var pullRequestNumber;
+var commitHash;
+var repositoryName;
+var repositoryAuthor;
 
 function htmlIsInjected() {
   return $('.pretty-pull-requests').length !== 0;
@@ -54,6 +58,19 @@ function getId(path) {
     return id;
 }
 
+function uniquify(id) {
+  var diffViewId = pullRequestNumber || commitHash;
+
+  return repositoryAuthor + '|' + repositoryName + '|' + diffViewId + '|' + id;
+}
+
+function collectUniquePageInfo() {
+  repositoryAuthor = $('[itemprop="author"]').find('a').text();
+  repositoryName = $('strong[itemprop="name"]').find('a').text();
+  pullRequestNumber = $('.gh-header-number').text();
+  commitHash = $('.sha.user-select-contain').text();
+}
+
 function toggleDiff(id, duration, display) {
     var $a = $('a[name^=' + id + ']');
 
@@ -63,7 +80,7 @@ function toggleDiff(id, duration, display) {
         if (!useLocalStorage) {
             display = 'toggle';
         } else {
-            display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+            display = (localStorage.getItem(uniquify(id)) === 'collapse') ? 'expand' : 'collapse';
         }
     }
 
@@ -80,11 +97,11 @@ function toggleDiff(id, duration, display) {
             case 'expand':
                 $data.slideDown(duration);
                 $bottom.show();
-                return useLocalStorage ? localStorage.removeItem(id) : true;
+                return useLocalStorage ? localStorage.removeItem(uniquify(id)) : true;
             default:
                 $data.slideUp(duration);
                 $bottom.hide();
-                return useLocalStorage ? localStorage.setItem(id, display) : true;
+                return useLocalStorage ? localStorage.setItem(uniquify(id), display) : true;
         }
     }
     return false;
@@ -119,7 +136,7 @@ function initDiffs() {
         $('a[name^=diff-]').each(function(index, item) {
             var id = $(item).attr('name');
 
-            if (localStorage.getItem(id) === 'collapse') {
+            if (localStorage.getItem(uniquify(id)) === 'collapse') {
                 toggleDiff(id, 0, 'collapse');
             }
         });
@@ -147,6 +164,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
 
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
+                collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
             }
