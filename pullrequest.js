@@ -1,5 +1,6 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 var useLocalStorage = true;
+var prId;
 
 function htmlIsInjected() {
   return $('.pretty-pull-requests').length !== 0;
@@ -36,11 +37,13 @@ function getDiffSpans(path) {
     });
 }
 
-function getCurrentPrId() {
-    var prId = $('meta[name=session-resume-id]').attr('content')
+function setCurrentPrId() {
+    prId = $('meta[name=session-resume-id]').attr('content')
         || '/' + document.URL.split('/').slice(-4).join('/');
+}
 
-    return prId + '/';
+function getCompleteId(id) {
+    return prId + '/' + id;
 }
 
 function getIds(path) {
@@ -62,16 +65,16 @@ function getId(path) {
 }
 
 function toggleDiff(id, duration, display) {
-    var prId = getCurrentPrId();
     var $a = $('a[name^=' + id + ']');
 
     duration = !isNaN(duration) ? duration : 200;
 
     if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
-        if (!useLocalStorage) {
-            display = 'toggle';
+        if (useLocalStorage) {
+            id = getCompleteId(id);
+            display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
         } else {
-            display = (localStorage.getItem(prId + id) === 'collapse') ? 'expand' : 'collapse';
+            display = 'toggle';
         }
     }
 
@@ -88,11 +91,11 @@ function toggleDiff(id, duration, display) {
             case 'expand':
                 $data.slideDown(duration);
                 $bottom.show();
-                return useLocalStorage ? localStorage.removeItem(prId + id) : true;
+                return useLocalStorage ? localStorage.removeItem(id) : true;
             default:
                 $data.slideUp(duration);
                 $bottom.hide();
-                return useLocalStorage ? localStorage.setItem(prId + id, display) : true;
+                return useLocalStorage ? localStorage.setItem(id, display) : true;
         }
     }
     return false;
@@ -124,12 +127,13 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
 
 function initDiffs() {
     if (useLocalStorage) {
-        var prId = getCurrentPrId();
+        setCurrentPrId();
 
         $('a[name^=diff-]').each(function(index, item) {
             var id = $(item).attr('name');
+            var completeId = getCompleteId(id);
 
-            if (localStorage.getItem(prId + id) === 'collapse') {
+            if (localStorage.getItem(completeId) === 'collapse') {
                 toggleDiff(id, 0, 'collapse');
             }
         });
