@@ -38,12 +38,14 @@ function getDiffSpans(path) {
 }
 
 function setCurrentPrId() {
-    prId = $('meta[name=session-resume-id]').attr('content')
-        || '/' + document.URL.split('/').slice(-4).join('/');
+    prId = 'ppr' + (
+        $('meta[name=session-resume-id]').attr('content')
+        || '/' + document.URL.split('/').slice(-4).join('/')
+        ) + '/';
 }
 
 function getCompleteId(id) {
-    return prId + '/' + id;
+    return prId + id;
 }
 
 function getIds(path) {
