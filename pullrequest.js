@@ -1,5 +1,6 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 var useLocalStorage = true;
+var prId;
 
 function htmlIsInjected() {
   return $('.pretty-pull-requests').length !== 0;
@@ -36,6 +37,17 @@ function getDiffSpans(path) {
     });
 }
 
+function setCurrentPrId() {
+    prId = 'ppr' + (
+        $('meta[name=session-resume-id]').attr('content')
+        || '/' + document.URL.split('/').slice(-4).join('/')
+        ) + '/';
+}
+
+function getCompleteId(id) {
+    return prId + id;
+}
+
 function getIds(path) {
     var $spans = getDiffSpans(path).closest('[id^=diff-]');
     var $as = $spans.prev('a[name^=diff-]');
@@ -57,13 +69,14 @@ function getId(path) {
 function toggleDiff(id, duration, display) {
     var $a = $('a[name^=' + id + ']');
 
+    id = useLocalStorage ? getCompleteId(id) : id;
     duration = !isNaN(duration) ? duration : 200;
 
     if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
-        if (!useLocalStorage) {
-            display = 'toggle';
-        } else {
+        if (useLocalStorage) {
             display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
+        } else {
+            display = 'toggle';
         }
     }
 
@@ -116,10 +129,13 @@ function moveToPreviousTab($pullRequestTabs, selectedTabIndex) {
 
 function initDiffs() {
     if (useLocalStorage) {
+        setCurrentPrId();
+
         $('a[name^=diff-]').each(function(index, item) {
             var id = $(item).attr('name');
+            var completeId = getCompleteId(id);
 
-            if (localStorage.getItem(id) === 'collapse') {
+            if (localStorage.getItem(completeId) === 'collapse') {
                 toggleDiff(id, 0, 'collapse');
             }
         });
@@ -144,6 +160,8 @@ function clickCollapse() {
 chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
+        var $body = $('body');
+        useLocalStorage = items.saveCollapsedDiffs;
 
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
@@ -152,8 +170,6 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
-        var $body = $('body');
-        useLocalStorage = items.saveCollapsedDiffs;
 
         injectHtmlIfNecessary();
 
