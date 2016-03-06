@@ -69,11 +69,11 @@ function getId(path) {
 function toggleDiff(id, duration, display) {
     var $a = $('a[name^=' + id + ']');
 
+    id = useLocalStorage ? getCompleteId(id) : id;
     duration = !isNaN(duration) ? duration : 200;
 
     if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
         if (useLocalStorage) {
-            id = getCompleteId(id);
             display = (localStorage.getItem(id) === 'collapse') ? 'expand' : 'collapse';
         } else {
             display = 'toggle';
@@ -160,6 +160,8 @@ function clickCollapse() {
 chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
+        var $body = $('body');
+        useLocalStorage = items.saveCollapsedDiffs;
 
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
@@ -168,8 +170,6 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
-        var $body = $('body');
-        useLocalStorage = items.saveCollapsedDiffs;
 
         injectHtmlIfNecessary();
 
