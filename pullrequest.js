@@ -1,5 +1,6 @@
 var isGitHub = $("meta[property='og:site_name']").attr('content') === 'GitHub';
 var useLocalStorage = true;
+var lsNamespace = 'ppr'; // Prepend to entries in localStorage for some namespacing to make deletion easier.
 var pullRequestNumber;
 var commitHash;
 var repositoryName;
@@ -58,10 +59,10 @@ function getId(path) {
     return id;
 }
 
-function uniquify(id) {
+function uniquify(diffId) {
   var diffViewId = pullRequestNumber || commitHash;
 
-  return repositoryAuthor + '|' + repositoryName + '|' + diffViewId + '|' + id;
+  return lsNamespace + '|' + repositoryAuthor + '|' + repositoryName + '|' + diffViewId + '|' + diffId;
 }
 
 function collectUniquePageInfo() {
