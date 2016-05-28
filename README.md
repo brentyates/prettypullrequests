@@ -10,4 +10,6 @@ Current Features:
 - File tree view allowing you to collapse a directory, or jump directly to a file diff
 - (Optional) Use backtick/tilde to switch tabs in the pull request. Backtick goes forward, and tilde (shift-backtick) goes backward. Enable this setting in the extension's options. 
 
+![Example Image](https://lh5.googleusercontent.com/BLjKtLpzeAE3bhNh3WFmpWxiM40MQ99z1hyNf28PK_jU3NXOdX554A8RBnBDu5htkOxT0CprCg=s640-h400-e365-rw)
+
 To install the chrome extension, visit:  https://chrome.google.com/webstore/detail/pretty-pull-requests-gith/ljnjpkadhhcdniohpfilddnhahoigdec?hl=en
