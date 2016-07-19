@@ -1,3 +1,7 @@
+![logo](../master/ppr-logo/128x128.png)
+
+# Pretty Pull Requests
+
 This extension will add various features to the diff view on Github's pull request pages.
 
 Supports both files changed and commit diffs.
@@ -12,4 +16,4 @@ Current Features:
 
 ![Example Image](https://raw.githubusercontent.com/Yatser/prettypullrequests/master/ppr_example.png)
 
-To install the chrome extension, visit:  https://chrome.google.com/webstore/detail/pretty-pull-requests-gith/ljnjpkadhhcdniohpfilddnhahoigdec?hl=en
+To install the chrome extension, visit: [chrome web store / pretty pull requests](https://chrome.google.com/webstore/detail/pretty-pull-requests-gith/ljnjpkadhhcdniohpfilddnhahoigdec?hl=en)
