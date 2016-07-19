@@ -15,6 +15,7 @@
     },
 
     "permissions" : ["tabs", "storage"],
+    "optional_permissions" : ["http://*/*", "https://*/*"],
 
     "content_scripts": [
         {

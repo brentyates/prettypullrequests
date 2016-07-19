@@ -46,8 +46,16 @@
 
       var $form = $(e.currentTarget);
       var url = $form.find('#url').val();
+      var origin = url.match(/https?:\/\/[^/?#]+/);
       var saveCollapsedDiffs = $form.find('#saveCollapsedDiffs').prop('checked');
       var tabSwitchingEnabled = $form.find('#tabSwitchingEnabled').prop('checked');
+
+      if (origin) {
+        origin[0] += '/*';
+        chrome.permissions.request({
+          origins: origin
+        });
+      }
 
       saveOptionsToChromeStorage({
         'url': url,
