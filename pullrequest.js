@@ -190,8 +190,9 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
                   return;
               }
 
-              var $pullRequestTabs = $('.js-pull-request-tab');
-              var selectedTabIndex = $('.js-pull-request-tab.selected').index();
+              var $pullRequestTabs = $('nav.tabnav-tabs a.tabnav-tab');
+              var $selectedTab     = $('nav.tabnav-tabs a.tabnav-tab.selected');
+              var selectedTabIndex = $pullRequestTabs.index( $selectedTab );
 
               if (e.shiftKey) {
                   // Making this work like it would in other apps, where the shift
