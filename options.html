@@ -20,6 +20,22 @@
                             </label>
                             <input id="url" type="url" class="form-control">
                         </div>
+                        <div class="control-group" id="auto-collapse-fields">
+                            <label class="control-label" for="field1">Auto-Collapse Rules</label>
+                            <div class="controls"> 
+                                <form role="form" id="auto-collapse-form" autocomplete="off">
+                                    <div class="entry input-group">
+                                        <input class="form-control" name="auto-collapse" type="text" placeholder="Regex to auto-collapse" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success btn-add field-add-button" type="button">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </form>
+                            <br>
+                            </div>
+                        </div>
                         <div class="checkbox">
                             <label>
                                 <input id="saveCollapsedDiffs" type="checkbox">Save collapsed diffs
