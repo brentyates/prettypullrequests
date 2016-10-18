@@ -15,3 +15,11 @@ body {
     margin-right: auto;
     margin-bottom: 30px;
 }
+
+.field-add-button {
+    height: 34px;
+}
+
+.field-add-button.glyphicon-plus {
+    font-size: 16px;
+}

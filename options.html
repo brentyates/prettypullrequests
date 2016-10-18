@@ -18,16 +18,32 @@
                             <label for="url">
                                 Github Enterprise URL
                             </label>
-                            <input id="url" type="url" class="form-control">
+                            <input name="url" type="url" class="form-control">
+                        </div>
+                        <div class="control-group" id="auto-collapse-fields">
+                            <label class="control-label" for="field1">Auto-Collapse Rules</label>
+                            <div class="controls"> 
+                                <div id="auto-collapse-form" autocomplete="off">
+                                    <div class="entry input-group">
+                                        <input class="form-control" name="autoCollapseExpressions" type="text" placeholder="Regex to auto-collapse" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success btn-add field-add-button" type="button">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            <br>
+                            </div>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input id="saveCollapsedDiffs" type="checkbox">Save collapsed diffs
+                                <input name="saveCollapsedDiffs" type="checkbox">Save collapsed diffs
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input id="tabSwitchingEnabled" type="checkbox">Allow backtick to switch tabs on pull requests
+                                <input name="tabSwitchingEnabled" type="checkbox">Allow backtick to switch tabs on pull requests
                             </label>
                         </div>
                         <button class="btn btn-primary" id="save">Save</button>

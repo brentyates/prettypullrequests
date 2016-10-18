@@ -5,6 +5,7 @@ var pullRequestNumber;
 var commitHash;
 var repositoryName;
 var repositoryAuthor;
+var autoCollapseExpressions;
 
 function htmlIsInjected() {
   return $('.pretty-pull-requests').length !== 0;
@@ -142,6 +143,7 @@ function initDiffs() {
             }
         });
     }
+    autoCollapse();
 }
 
 function clickTitle() {
@@ -159,9 +161,17 @@ function clickCollapse() {
     return toggleDiff(id, '200', 'collapse');
 }
 
-chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false}, function(items) {
+function autoCollapse() {
+    autoCollapseExpressions.forEach(item => {
+        toggleDiffs(item, 'collapse');
+    });
+}
+
+chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
+
+        autoCollapseExpressions = items.autoCollapseExpressions;
 
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
