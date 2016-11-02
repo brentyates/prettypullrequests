@@ -8,7 +8,7 @@ var repositoryAuthor;
 var autoCollapseExpressions;
 
 function htmlIsInjected() {
-  return $('.pretty-pull-requests').length !== 0;
+  return $('.pretty-pull-requests-inserted').length > 0;
 }
 
 function injectHtml() {
@@ -18,6 +18,7 @@ function injectHtml() {
     '</span>').insertAfter('.actions, .file-actions');
 
   $('<div class="pretty-pull-requests bottom-collapse">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
+  $('<div class="pretty-pull-requests-inserted" style="display: none"></div>').appendTo('body');
 }
 
 function collapseAdditions() {
@@ -178,6 +179,11 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
+
+                $body.on('click', '.user-select-contain, .js-selectable-text', clickTitle);
+                $body.on('click', '.bottom-collapse', clickCollapse);
+                $body.on('click', '.js-collapse-additions', collapseAdditions);
+                $body.on('click', '.js-collapse-deletions', collapseDeletions);
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
@@ -185,14 +191,6 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
         useLocalStorage = items.saveCollapsedDiffs;
 
         injectHtmlIfNecessary();
-
-        $body.on('click', '.user-select-contain, .js-selectable-text', clickTitle);
-
-        $body.on('click', '.bottom-collapse', clickCollapse);
-
-        $body.on('click', '.js-collapse-additions', collapseAdditions);
-
-        $body.on('click', '.js-collapse-deletions', collapseDeletions);
 
         if (items.tabSwitchingEnabled) {
           $body.on('keydown', function (e) {
