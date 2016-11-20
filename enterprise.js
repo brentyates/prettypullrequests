@@ -148,8 +148,9 @@ function initDiffs() {
 }
 
 function clickTitle() {
-    var path = $(this).attr('title');
+    var path = $(this).attr('title') || this.innerText;
     var id = getId(path);
+    debugger;
 
     return toggleDiff(id);
 }
@@ -179,8 +180,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
-
-                $body.on('click', '.user-select-contain, .js-selectable-text', clickTitle);
+                $body.on('click', '.user-select-contain, .js-selectable-text, .file-info .link-gray-dark', clickTitle);
                 $body.on('click', '.bottom-collapse', clickCollapse);
                 $body.on('click', '.js-collapse-additions', collapseAdditions);
                 $body.on('click', '.js-collapse-deletions', collapseDeletions);

@@ -18,7 +18,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (tab.url.indexOf('github.com') < 0) {
       chrome.tabs.insertCSS(null, {file: "pullrequest.css"});
       chrome.tabs.executeScript(null, {file: "jquery-1.9.1.min.js"});
-      chrome.tabs.executeScript(null, {file: "pullrequest.js"});
+      chrome.tabs.executeScript(null, {file: "enterprise.js"});
     }
   }
 });
