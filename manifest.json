@@ -19,16 +19,7 @@
 
     "content_scripts": [
         {
-            "matches": ["https://github.com/*/pull/*/files",
-                        "https://github.com/*/commit*",
-                        "https://github.com/*/pulls*",
-                        "https://github.com/*/compare*",
-                        "https://github.com/*/*/pulls*",
-                        "https://github.com/*/*/pull/*",
-                        "https://github.com/*/*/pull/*/files",
-                        "https://github.com/*/*/commit*",
-                        "https://github.com/*/*/compare*"
-                        ],
+            "matches": ["https://github.com/*"],
             "js": ["jquery-1.9.1.min.js", "github.com.js"],
             "css": ["pullrequest.css"]
         }
