@@ -169,7 +169,7 @@ function autoCollapse() {
 }
 
 chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
-    if (items.url == window.location.origin ||
+    if (items.url === window.location.origin ||
         "https://github.com" === window.location.origin) {
 
         autoCollapseExpressions = items.autoCollapseExpressions;
