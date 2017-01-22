@@ -16,7 +16,7 @@ function htmlIsInjected() {
 }
 
 function injectHtml() {
-    if (!onFilesPage()) return;
+  if (!onFilesPage()) return;
   $('<span class="pretty-pull-requests collapse-lines">' +
         '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
         '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
