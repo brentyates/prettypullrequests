@@ -1,13 +1,13 @@
-var urls = ['github.com'];
+const urls = ['github.com'];
 
 function host(url) {
-    return url.trim().replace(/^(?:https?:\/\/)([^\/?#]+).*$/, '$1').toLowerCase();
+    return new URL(url).hostname;
 }
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  if (-1 !== urls.indexOf(host(tab.url))) {
+  if (urls.includes(host(tab.url))) {
     chrome.pageAction.show(tabId);
-    if (tab.url.indexOf('github.com') < 0) {
+    if (!tab.url.includes('github.com')) {
       chrome.tabs.insertCSS(null, {file: "pullrequest.css"});
       chrome.tabs.executeScript(null, {file: "jquery-1.9.1.min.js"});
       chrome.tabs.executeScript(null, {file: "enterprise.js"});
@@ -16,5 +16,5 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 chrome.storage.sync.get({url: ''}, function(items) {
-    urls.push(items.url.replace(/https?:\/\//, ''));
+    urls.push(host(items.url));
 });
