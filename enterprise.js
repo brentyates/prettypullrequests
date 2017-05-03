@@ -193,7 +193,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
                     $body.on('click', '.js-collapse-deletions', collapseDeletions);
                 }
             } else {
-                cleartInterval(interval);
+                clearInterval(interval);
             }
         };
         interval = setInterval(injectHtmlIfNecessary, 1000);
