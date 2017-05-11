@@ -59,7 +59,7 @@ function getIds(path) {
 }
 
 function getId(path) {
-    var $span = $('span[title="' + path + '"]').closest('[id^=diff-]');
+    var $span = $('a[title="' + path + '"]').closest('[id^=diff-]');
     var $a = $span.prev('a[name^=diff-]');
     var id = $a.attr('name');
 
@@ -94,7 +94,7 @@ function toggleDiff(id, duration, display) {
 
     if ($a) {
         var $span = $a.next('div[id^=diff-]');
-        var $data = $span.children('.data, .image');
+        var $data = $span.children('.js-file-content');
         var $bottom = $span.children('.bottom-collapse');
 
         switch (display) {
