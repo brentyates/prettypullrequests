@@ -161,7 +161,7 @@ function clickTitle(e) {
 }
 
 function clickCollapse() {
-    var $span = $(this).prevAll('.file-header');
+    var $span = $(this).closest('.js-file-content').prev('.file-header');
     var path = $span.attr('data-path');
     var id = getId(path);
 
