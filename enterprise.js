@@ -7,11 +7,16 @@ var repositoryName;
 var repositoryAuthor;
 var autoCollapseExpressions;
 
+function onFilesPage() {
+    return window.location.href.indexOf('files') !== -1;
+}
+
 function htmlIsInjected() {
   return $('.pretty-pull-requests-inserted').length > 0;
 }
 
 function injectHtml() {
+  if (!onFilesPage()) return;
   $('<span class="pretty-pull-requests collapse-lines">' +
         '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
         '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
@@ -54,7 +59,7 @@ function getIds(path) {
 }
 
 function getId(path) {
-    var $span = $('span[title="' + path + '"]').closest('[id^=diff-]');
+    var $span = $('a[title="' + path + '"]').closest('[id^=diff-]');
     var $a = $span.prev('a[name^=diff-]');
     var id = $a.attr('name');
 
@@ -89,7 +94,7 @@ function toggleDiff(id, duration, display) {
 
     if ($a) {
         var $span = $a.next('div[id^=diff-]');
-        var $data = $span.children('.data, .image');
+        var $data = $span.children('.js-file-content');
         var $bottom = $span.children('.bottom-collapse');
 
         switch (display) {
@@ -147,16 +152,16 @@ function initDiffs() {
     autoCollapse();
 }
 
-function clickTitle() {
+function clickTitle(e) {
+    e.preventDefault();
     var path = $(this).attr('title') || this.innerText;
     var id = getId(path);
-    debugger;
 
     return toggleDiff(id);
 }
 
 function clickCollapse() {
-    var $span = $(this).prevAll('.file-header');
+    var $span = $(this).closest('.js-file-content').prev('.file-header');
     var path = $span.attr('data-path');
     var id = getId(path);
 
@@ -170,23 +175,28 @@ function autoCollapse() {
 }
 
 chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
-    if (items.url == window.location.origin ||
+    if (items.url === window.location.origin ||
         "https://github.com" === window.location.origin) {
 
         autoCollapseExpressions = items.autoCollapseExpressions;
 
+        var interval = null;
         var injectHtmlIfNecessary = function () {
             if (!htmlIsInjected()) {
-                collectUniquePageInfo();
-                injectHtml();
-                initDiffs();
-                $body.on('click', '.user-select-contain, .js-selectable-text, .file-info .link-gray-dark', clickTitle);
-                $body.on('click', '.bottom-collapse', clickCollapse);
-                $body.on('click', '.js-collapse-additions', collapseAdditions);
-                $body.on('click', '.js-collapse-deletions', collapseDeletions);
+                if (onFilesPage()) {
+                    collectUniquePageInfo();
+                    injectHtml();
+                    initDiffs();
+                    $body.on('click', '.user-select-contain, .js-selectable-text, .file-info .link-gray-dark', clickTitle);
+                    $body.on('click', '.bottom-collapse', clickCollapse);
+                    $body.on('click', '.js-collapse-additions', collapseAdditions);
+                    $body.on('click', '.js-collapse-deletions', collapseDeletions);
+                }
+            } else {
+                clearInterval(interval);
             }
-            setTimeout(injectHtmlIfNecessary, 1000);
         };
+        interval = setInterval(injectHtmlIfNecessary, 1000);
         var $body = $('body');
         useLocalStorage = items.saveCollapsedDiffs;
 
