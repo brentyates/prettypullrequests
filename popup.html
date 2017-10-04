@@ -10,10 +10,14 @@
 <body>
     <div class="path-area">
         <input class="form-control" id="path" type="text" placeholder="Path (Regex)...">
-        <button class="btn btn-default btn-sm" id="collapse"><i class="glyphicon glyphicon-minus"></i></button>
-        <button class="btn btn-default btn-sm" id="expand"><i class="glyphicon glyphicon-plus"></i></button>
+        <button class="btn btn-default btn-sm" id="collapse" title="Collapse All Diffs"><i class="glyphicon glyphicon-minus"></i></button>
+        <button class="btn btn-default btn-sm" id="expand" title="Expand All Diffs"><i class="glyphicon glyphicon-plus"></i></button>
     </div>
     <div id="tree"></div>
+    <div class="path-area">
+        <button class="btn btn-default btn-sm" id="collapse-tree" title="Collapse File Tree">Collapse Tree</i></button>
+        <button class="btn btn-default btn-sm" id="expand-tree" title="Expand File Tree">Expand Tree</i></button>
+    </div>
     <script src="jquery-1.9.1.min.js"></script>
     <script src="popup.js"></script>
     <script src="jstree/jstree.min.js"></script>

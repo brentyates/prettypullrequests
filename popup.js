@@ -14,9 +14,19 @@ function expand() {
     port.postMessage({expand: path});
 }
 
+function collapseTree() {
+    $('#tree').jstree('close_all');
+}
+
+function expandTree() {
+    $('#tree').jstree('open_all');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#collapse').addEventListener('click', collapse);
     document.querySelector('#expand').addEventListener('click', expand);
+    document.querySelector('#collapse-tree').addEventListener('click', collapseTree);
+    document.querySelector('#expand-tree').addEventListener('click', expandTree);
 });
 
 function Node(id, parent, text, icon) {
