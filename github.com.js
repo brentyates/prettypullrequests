@@ -17,6 +17,11 @@ function injectHtml() {
         '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
     '</span>').insertAfter('.actions, .file-actions');
 
+  $('<span class="pretty-pull-requests hide-whitespace">' +
+        '<label>Hide whitespace changes <input type="checkbox" class="js-hide-whitespace"></label>' +
+    '</span>').insertAfter('.diffbar-item.diffstat');
+  $('.js-hide-whitespace').prop('checked', isWhitespaceHidden('w'));
+
   $('<div class="pretty-pull-requests bottom-collapse">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
   $('<div class="pretty-pull-requests-inserted" style="display: none"></div>').appendTo('body');
 }
@@ -36,6 +41,29 @@ function collapseDeletions() {
         $(this).closest('[id^=diff-]').find('.gd').slideToggle();
     }
 }
+
+// Whitespace is hidden if query parameter w=1 is set
+function isWhitespaceHidden() {
+    var regex = new RegExp("[?;&]w(=([^&;#]*)|&|;|#|$)"),
+        results = regex.exec(window.location.search);
+    return results && results[2] && results[2] === '1';
+}
+
+function toggleWhitespace() {
+    window.location.search = setQueryParam(window.location.search, 'w', (isWhitespaceHidden() ? '0' : '1'));
+}
+
+var setQueryParam = function(search, key, val){
+    var newParam = key + '=' + val;
+    if (search.length === 0) {
+        return '?' + newParam;
+    }
+    var searchNew = search.replace(new RegExp('([?;&])' + key + '[^;&]*'), '$1' + newParam);
+    if (searchNew === search) {
+        searchNew += '&' + newParam;
+    }
+    return searchNew;
+};
 
 function getDiffSpans(path) {
     return $('.file-info .link-gray-dark').filter(function () {
@@ -177,6 +205,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
                 $body.on('click', '.bottom-collapse', clickCollapse);
                 $body.on('click', '.js-collapse-additions', collapseAdditions);
                 $body.on('click', '.js-collapse-deletions', collapseDeletions);
+                $body.on('click', '.js-hide-whitespace', toggleWhitespace);
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
