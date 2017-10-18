@@ -20,7 +20,7 @@ function injectHtml() {
   $('<span class="pretty-pull-requests hide-whitespace">' +
         '<label>Hide whitespace changes <input type="checkbox" class="js-hide-whitespace"></label>' +
     '</span>').insertAfter('.diffbar-item.diffstat');
-  $('.js-hide-whitespace').prop('checked', isWhitespaceHidden('w'));
+  $('.js-hide-whitespace').prop('checked', isWhitespaceHidden());
 
   $('<div class="pretty-pull-requests bottom-collapse">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
   $('<div class="pretty-pull-requests-inserted" style="display: none"></div>').appendTo('body');
