@@ -12,6 +12,14 @@
     margin-left: 10px;
 }
 
+.hide-whitespace label {
+    display: block;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 18px;
+    margin-left: 10px;
+}
+
 .js-selectable-text,
 .user-select-contain {
     cursor: pointer;
