@@ -67,7 +67,7 @@ var setQueryParam = function(search, key, val){
 
 function getDiffSpans(path) {
     return $('.file-info .link-gray-dark').filter(function () {
-        return this.innerHTML.trim().match(path);
+        return this.title.trim().match(path);
     });
 }
 
@@ -255,7 +255,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if (request.getPaths) {
                 var paths = $.map($('.file-info .link-gray-dark'), function (item) {
-                    return $.trim(item.innerHTML);
+                    return $.trim(item.title);
                 });
                 if (paths.length > 0) {
                     sendResponse({paths: paths});
