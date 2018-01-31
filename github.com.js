@@ -7,8 +7,8 @@ var repositoryName;
 var repositoryAuthor;
 var autoCollapseExpressions;
 
-function htmlIsInjected() {
-  return $('.pretty-pull-requests-inserted').length > 0;
+function htmlShouldBeInjected() {
+  return $('a[href$="/files"].tabnav-tab.selected').length > 0 && $('.pretty-pull-requests-inserted').length <= 0;
 }
 
 function injectHtml() {
@@ -197,7 +197,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
         autoCollapseExpressions = items.autoCollapseExpressions;
 
         var injectHtmlIfNecessary = function () {
-            if (!htmlIsInjected()) {
+            if (htmlShouldBeInjected()) {
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
