@@ -73,12 +73,8 @@ function getDiffSpans(path) {
 
 function getIds(path) {
     var $spans = getDiffSpans(path).closest('[id^=diff-]');
-    var $as = $spans.prev('a[name^=diff-]');
-    var $ids = $as.map(function(index, a) {
-        return $(a).attr('name');
-    });
-
-    return $ids;
+    const ids = $spans.map((index, a) => a.id);
+    return ids;
 }
 
 function getId(path) {
@@ -103,7 +99,7 @@ function collectUniquePageInfo() {
 }
 
 function toggleDiff(id, duration, display) {
-    var $a = $('a[name^=' + id + ']');
+    var $a = $(`#${id}`);
     duration = !isNaN(duration) ? duration : 200;
 
     if ($.inArray(display, ['expand', 'collapse', 'toggle']) < 0) {
